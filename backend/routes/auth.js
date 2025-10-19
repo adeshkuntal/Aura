@@ -166,6 +166,20 @@ router.get("/getPosts", async (req, res) => {
 });
 
 
+router.put("/like/:id", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    post.likes += 1; // increment like count
+    await post.save();
+
+    res.json({ success: true, likes: post.likes });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 
 // Logout route

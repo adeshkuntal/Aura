@@ -1,24 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ProfileHeader from "../components/ProfileHeader";
-import { useEffect } from "react";
+import ShowPost from "../components/ShowPost";
+import Footer from "../components/Footer";
 import axios from "axios";
-import { useState } from "react";
 
 const Profile = ({ user, setUser }) => {
   const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedPost, setSelectedPost] = useState(null);
 
-  
   const arrayBufferToBase64 = (buffer) => {
     if (!buffer || !buffer.data) return "";
     try {
       const bytes = new Uint8Array(buffer.data);
-      let binary = '';
-      bytes.forEach(byte => binary += String.fromCharCode(byte));
+      let binary = "";
+      bytes.forEach((byte) => (binary += String.fromCharCode(byte)));
       return window.btoa(binary);
-    } catch (error) {
-      console.error("Error converting buffer to base64:", error);
+    } catch {
       return "";
     }
   };
@@ -29,7 +28,7 @@ const Profile = ({ user, setUser }) => {
         setLoading(true);
         const res = await axios.get("http://localhost:5000/getPosts", {
           params: { userId: user?._id },
-          withCredentials: true
+          withCredentials: true,
         });
         setPosts(res.data.posts);
       } catch (err) {
@@ -38,138 +37,152 @@ const Profile = ({ user, setUser }) => {
         setLoading(false);
       }
     };
-    
-    if (user?._id) {
-      fetchPosts();
-    }
-  }, [user]);
 
+    if (user?._id) fetchPosts();
+  }, [user]);
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-100">
-        <div className="text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100">
+        <div className="text-center animate-fadeIn">
           <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
+          <p className="text-gray-600 font-medium">Loading your profile...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-100 flex overflow-hidden">
       <ProfileHeader user={user} setUser={setUser} />
-      
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Profile Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-            {/* Profile Picture - THIS WORKS */}
+
+      {/* Main Content */}
+      <div className="flex-1 ml-0 md:ml-64 flex flex-col h-screen">
+        {/* Profile Card */}
+        <div className="backdrop-blur-md bg-white/80 border border-white/30 shadow-xl rounded-b-2xl p-6 sticky top-0 z-20 transition-all">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             <div className="relative">
               <img
                 src={
                   user.profilePic?.data
-                    ? `data:${user.profilePic.contentType};base64,${arrayBufferToBase64(user.profilePic.data)}`
+                    ? `data:${user.profilePic.contentType};base64,${arrayBufferToBase64(
+                        user.profilePic.data
+                      )}`
                     : "https://i.pinimg.com/736x/33/e0/c6/33e0c6104544936b133a09b8cb118385.jpg"
                 }
                 alt="Profile"
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg object-cover"
-                onError={(e) => {
-                  e.target.src = "https://i.pinimg.com/736x/33/e0/c6/33e0c6104544936b133a09b8cb118385.jpg";
-                }}
+                className="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-white shadow-md object-cover transition-transform hover:scale-105"
               />
-              <div className="absolute bottom-2 right-2 w-8 h-8 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                <span className="text-white text-sm">✓</span>
+              <div className="absolute bottom-2 right-2 w-7 h-7 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                <span className="text-white text-xs">✓</span>
               </div>
             </div>
 
-            {/* User Info */}
             <div className="flex-1 text-center md:text-left">
-              <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-3">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{user.username}</h2>
-                  <p className="text-gray-600 mt-1">{user.fullname || "Aura Member"}</p>
+                  <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+                    {user.username}
+                  </h2>
+                  <p className="text-gray-500 text-sm mt-1">
+                    {user.fullname || "Aura Member"}
+                  </p>
                 </div>
                 <Link
                   to="/edit-profile"
-                  className="mt-4 md:mt-0 inline-block bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-indigo-600 hover:to-purple-700 transition shadow-md"
+                  className="mt-4 md:mt-0 inline-block bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-5 py-2.5 rounded-xl font-medium shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
                 >
-                  Edit Profile
+                  ✏️ Edit Profile
                 </Link>
               </div>
 
-              {/* Stats */}
-              <div className="flex justify-center md:justify-start space-x-8 mb-4">
-                <div className="text-center">
-                  <span className="block text-xl font-bold text-gray-900">{posts?.length || 0}</span>
-                  <span className="text-gray-600 text-sm">Posts</span>
-                </div>
-                <div className="text-center">
-                  <span className="block text-xl font-bold text-gray-900">{user.followers || 0}</span>
-                  <span className="text-gray-600 text-sm">Followers</span>
-                </div>
-                <div className="text-center">
-                  <span className="block text-xl font-bold text-gray-900">{user.following || 0}</span>
-                  <span className="text-gray-600 text-sm">Following</span>
-                </div>
+              <div className="flex justify-center md:justify-start gap-8 mb-3">
+                {[
+                  { label: "Posts", value: posts?.length || 0 },
+                  { label: "Followers", value: user.followers || 0 },
+                  { label: "Following", value: user.following || 0 },
+                ].map((stat) => (
+                  <div key={stat.label} className="text-center">
+                    <span className="block text-xl font-bold text-gray-900">
+                      {stat.value}
+                    </span>
+                    <span className="text-gray-500 text-sm">{stat.label}</span>
+                  </div>
+                ))}
               </div>
 
-              {/* Bio */}
-              <p className="text-gray-700 mt-4 text-center md:text-left">
-                {user.bio || "Welcome to my Aura profile! ✨"}
+              <p className="text-gray-700 mt-2 italic text-center md:text-left max-w-lg">
+                {user.bio || "✨ Welcome to my Aura space — let’s make memories!"}
               </p>
             </div>
           </div>
         </div>
 
-
-        {/* Posts Grid */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Posts</h3>
-
-          <Link
-            to="/upload-post"
-            className="inline-block bg-red-400 text-white px-6 py-2 rounded-lg hover:bg-red-500 transition mb-6"
-          >
-            Upload Post
-          </Link>
-
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading posts...</p>
+        {/* Posts Section */}
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg p-6 border border-white/40">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">📸 Your Posts</h3>
             </div>
-          ) : posts && posts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {posts.map((post, index) => {
-                const imageSrc = post.image?.data
-                  ? `data:${post.image.contentType};base64,${arrayBufferToBase64(post.image.data)}`
-                  : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg";
 
-                return (
-                  <div key={post._id || index} className="relative group cursor-pointer">
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                      <img
-                          src={imageSrc}
-                          alt={`Post ${index + 1}`}
-                          className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl text-gray-400">📷</span>
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600 font-medium">Fetching posts...</p>
               </div>
-              <p className="text-gray-500 text-lg">No posts yet</p>
-              <p className="text-gray-400 mt-2">Share your first moment with Aura</p>
-            </div>
-          )}
+            ) : posts && posts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {posts.map((post, i) => {
+                  const imageSrc = post.image?.data
+                    ? `data:${post.image.contentType};base64,${arrayBufferToBase64(
+                        post.image.data
+                      )}`
+                    : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg";
+                  return (
+                    <div
+                      key={post._id || i}
+                      className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                      onClick={() => setSelectedPost({ post, imageSrc })}
+                    >
+                      <img
+                        src={imageSrc}
+                        alt={`Post ${i + 1}`}
+                        className="w-full h-full object-cover aspect-square group-hover:opacity-90"
+                      />
+                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-lg font-semibold transition-all">
+                        View Post
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-4xl text-gray-400">📷</span>
+                </div>
+                <p className="text-gray-600 text-lg font-medium">
+                  No posts yet
+                </p>
+                <p className="text-gray-400 mt-2">
+                  Share your first Aura moment ✨
+                </p>
+              </div>
+            )}
+          </div>
+          <div className="mt-auto">
+            <Footer />
+          </div>
         </div>
 
+        {/* ShowPost Modal */}
+        {selectedPost && (
+          <ShowPost
+            postData={selectedPost.post}
+            image={selectedPost.imageSrc}
+            onClose={() => setSelectedPost(null)}
+          />
+        )}
       </div>
     </div>
   );

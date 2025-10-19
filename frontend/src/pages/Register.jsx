@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -17,100 +16,129 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
     try {
       const res = await axios.post("http://localhost:5000/register", form);
       if (res.data) {
-        setMessage("Registration successful! Redirecting to login...");
+        setMessage("🎉 Registration successful! Redirecting to login...");
         setTimeout(() => navigate("/login"), 2000);
       }
     } catch (err) {
-      setMessage(err.response?.data?.message || "Registration failed. Please try again.");
+      setMessage(
+        err.response?.data?.message || "Registration failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-6 sm:p-8 mt-8">
-      <Header />
-      <div className="text-center mb-8">
-        <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-          <img 
-            src="/images/logo2.png" 
-            alt="Aura Logo" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <h2 className="text-3xl font-bold text-gray-900">Join Aura</h2>
-        <p className="text-gray-600 mt-2">Create your account today</p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
-          <input
-            type="text"
-            name="username"
-            placeholder="Choose a username"
-            value={form.username}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Create a password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-700 focus:ring-4 focus:ring-purple-200 disabled:opacity-50 transition font-medium"
-        >
-          {loading ? (
-            <div className="flex items-center justify-center">
-              <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin mr-2"></div>
-              Creating Account...
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100 flex items-center justify-center px-4 py-8">
+      <div className="max-w-md w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl">
+        {/* Logo Section */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="w-18 h-18 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg ring-4 ring-purple-200">
+              <img
+                src="/images/lily.jpeg"
+                alt="Aura Logo"
+                className="w-18 h-18 object-cover rounded-full"
+              />
             </div>
-          ) : (
-            "Create Account"
-          )}
-        </button>
-      </form>
-
-      {message && (
-        <div className={`mt-4 p-3 rounded-lg text-center ${
-          message.includes("successful") 
-            ? "bg-green-100 text-green-700" 
-            : "bg-red-100 text-red-700"
-        }`}>
-          {message}
+          </div>
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            Join Aura ✨
+          </h2>
+          <p className="text-gray-600 mt-2">Create your free account today</p>
         </div>
-      )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              placeholder="Choose a username"
+              value={form.username}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50 hover:bg-white transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="example@email.com"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50 hover:bg-white transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Create a strong password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50 hover:bg-white transition-all"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl hover:scale-[1.02] hover:from-purple-600 hover:to-pink-700 active:scale-[0.98] focus:ring-4 focus:ring-purple-200 transition-all font-medium shadow-md"
+          >
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                Creating Account...
+              </div>
+            ) : (
+              "Create Account"
+            )}
+          </button>
+
+          <div className="text-center mt-4">
+            <p className="text-gray-600 text-sm">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="font-semibold text-purple-600 hover:text-pink-600 transition"
+              >
+                Sign In
+              </Link>
+            </p>
+          </div>
+        </form>
+
+        {/* Message */}
+        {message && (
+          <div
+            className={`mt-6 p-3 rounded-lg text-center text-sm font-medium transition-all ${
+              message.includes("successful")
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -14,6 +14,7 @@ const Footer = () => {
           <p className="text-gray-500 text-sm">
             &copy; {new Date().getFullYear()} Aura. All rights reserved.
           </p>
+          <p>Made with ❤️ by Adesh</p>
         </div>
       </div>
     </footer>
