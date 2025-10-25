@@ -2,10 +2,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Layout from "./pages/Layout";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import UploadPost from "./pages/UploadPost";
-import ShowPost from "./components/ShowPost";
+import Search from "./pages/Search";
+import UserProfile from "./pages/UserProfile";
 import axios from "axios";
 
 export default function App() {
@@ -15,7 +17,7 @@ export default function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/me", {withCredentials: true});
+        const res = await axios.get("http://localhost:5000/me", { withCredentials: true });
         setUser(res.data.user);
       } catch (err) {
         console.log("User fetch failed", err);
@@ -39,20 +41,20 @@ export default function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100">
-        <div className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
-          <Routes>
-            <Route path="/" element={<Navigate to={user ? "/profile" : "/login"} />} />
-            <Route path="/login" element={<Login setUser={setUser} />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
-            <Route path="/edit-profile" element={<EditProfile user={user} setUser={setUser} />} />
-            <Route path="/upload-post" element={<UploadPost user={user} />} />
-          </Routes>
-        </div>
-      </div>
+      <Routes>
+        <Route path="/" element={<Navigate to={user ? "/home" : "/login"} />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* Layout + Nested Routes */}
+        <Route path="/home" element={<Layout user={user} setUser={setUser} />}>
+          <Route index element={<Profile user={user} setUser={setUser} />} />
+          <Route path="edit-profile" element={<EditProfile user={user} setUser={setUser} />} />
+          <Route path="upload-post" element={<UploadPost user={user} />} />
+          <Route path="search" element={<Search user={user} />} />
+          <Route path="search/:id" element={<UserProfile user={user} />} />
+        </Route>
+      </Routes>
     </Router>
   );
-
-  
 }

@@ -23,7 +23,7 @@ const Login = ({ setUser }) => {
       if (res.data && res.data.user) {
         setUser(res.data.user);
         setMessage("Login successful!");
-        setTimeout(() => navigate("/profile"), 1000);
+        setTimeout(() => navigate("/home"), 1000);
       }
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed. Please try again.");
@@ -78,7 +78,7 @@ const Login = ({ setUser }) => {
             <input
               type="password"
               name="password"
-              placeholder="••••••••"
+              placeholder="Enter Password"
               value={form.password}
               onChange={handleChange}
               required

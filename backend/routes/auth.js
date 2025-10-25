@@ -4,7 +4,7 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-
+const mongoose = require("mongoose");
 const router = express.Router();
 
 // Multer config (memory storage for MongoDB)
@@ -129,7 +129,7 @@ router.put("/updateprofile", upload.single("profilePic"), async (req, res) => {
 //Upload Post
 router.post("/uploadPost", upload.single("file"), async (req, res) => {
   try {
-    const { userId, caption } = req.body;
+    const { userId, caption, description } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -142,6 +142,7 @@ router.post("/uploadPost", upload.single("file"), async (req, res) => {
         contentType: req.file.mimetype,
       },
       caption,
+      description,
       likes: 0,
       comments: [],
     });
@@ -166,20 +167,140 @@ router.get("/getPosts", async (req, res) => {
 });
 
 
-router.put("/like/:id", async (req, res) => {
+router.put("/like", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Post not found" });
+    const { postId, Id } = req.query;
+    if (!postId || !Id){
+      return res.status(400).json({ success: false, message: "Missing IDs" });
+    }
 
-    post.likes += 1; // increment like count
+    const post = await Post.findById(postId);
+    if (!post){
+      return res.status(404).json({ success: false, message: "Post not found" });
+    }
+    post.likedBy = post.likedBy || [];
+    const liked = post.likedBy.some((user) => user.toString() === Id);
+
+    if (liked) {
+      post.likedBy.pull(Id);
+      post.likes = Math.max(post.likes - 1, 0);
+    } else {
+      post.likedBy.push(Id);
+      post.likes = post.likes + 1;
+    }
+
     await post.save();
-
-    res.json({ success: true, likes: post.likes });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Server error" });
+    res.json({ success: true, likes: post.likes, isLiked: !liked });
+  } catch (err) {
+    console.error("Error in like:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
+
+router.get("/isLiked", async (req, res) => {
+  try {
+    const { postId, Id } = req.query;
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // ✅ Fix: likedBy array stores userIds directly (not objects)
+    const isliked = post.likedBy.some(
+      (user) => user.toString() === Id
+    );
+
+    res.json({ isliked });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+router.post("/addComment", async (req, res) => {
+  try {
+    const { postId, userId, text } = req.body;
+
+    if (!postId || !userId || !text) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    const post = await Post.findById(postId);
+
+    post.comments = post.comments || [];
+    post.comments.push({ userId, text });
+    await post.save();
+    res.status(201).json({ message: "Comment successfully added" });
+  } catch (err) {
+    console.error("Error adding comment:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+router.get("/getComment", async (req, res) => {
+  try {
+    const { postId } = req.query;
+
+    const post = await Post.findById(postId).populate("comments.userId", "username"); 
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json({ comments: post.comments});
+  } catch (err) {
+    console.error("Error fetching comments:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+router.get("/getUsers", async (req, res) => {
+  try {
+    const { username } = req.query;
+    const query = username
+      ? { username: { $regex: '^' + username, $options: 'i' } } 
+      : {};
+
+    const users = await User.find(query).select('username'); 
+    res.json({ users });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+router.get("/getUser/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/getPost/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const posts = await Post.find({ userId: id });
+    res.json({ posts });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+
 
 
 // Logout route

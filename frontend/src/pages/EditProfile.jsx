@@ -52,7 +52,7 @@ const EditProfile = ({ user, setUser }) => {
 
       setUser(res.data.user);
       setMessage("Profile updated successfully!");
-      setTimeout(() => navigate("/profile"), 1000);
+      setTimeout(() => navigate("/home"), 1000);
     } catch (err) {
       setMessage("Update failed. Please try again.");
       console.error("Update failed", err);
@@ -139,7 +139,7 @@ const EditProfile = ({ user, setUser }) => {
         <div className="flex space-x-4">
           <button
             type="button"
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/home")}
             className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
           >
             Cancel

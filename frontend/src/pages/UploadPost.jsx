@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const UploadPost = ({ user }) => {
   const [file, setFile] = useState(null);
   const [caption, setCaption] = useState("");
+  const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,6 +21,7 @@ const UploadPost = ({ user }) => {
       formData.append("userId", user?._id);
       formData.append("file", file);
       formData.append("caption", caption);
+      formData.append("description", description);
 
       const res = await axios.post(
         "http://localhost:5000/uploadPost",
@@ -31,7 +33,7 @@ const UploadPost = ({ user }) => {
       );
 
       console.log("Uploaded:", res.data);
-      navigate("/profile");
+      navigate("/home");
     } catch (err) {
       console.error("Upload failed:", err);
     }
@@ -73,11 +75,25 @@ const UploadPost = ({ user }) => {
           />
         </div>
 
+        {/* Description input */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Description
+          </label>
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Write a description..."
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
         {/* Buttons */}
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/home")}
             className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
           >
             Cancel

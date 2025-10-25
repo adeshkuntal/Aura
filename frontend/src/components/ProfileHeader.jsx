@@ -18,10 +18,11 @@ const ProfileHeader = ({ user, setUser }) => {
   };
 
   const navItems = [
-    { name: "Profile", path: "/profile", icon: <User size={20} /> },
-    { name: "Upload Post", path: "/upload-post", icon: <PlusCircle size={20} /> },
-    { name: "Search", path: "/search", icon: <Search size={20} /> },
+    { name: "Profile", path: "/home", icon: <User size={20} /> },
+    { name: "Upload Post", path: "/home/upload-post", icon: <PlusCircle size={20} /> },
+    { name: "Search", path: "/home/search", icon: <Search size={20} /> },
   ];
+
 
   return (
     <aside className="fixed top-0 left-0 h-screen w-64 bg-white shadow-xl flex flex-col justify-between py-6 px-4 z-50 border-r border-gray-200">
