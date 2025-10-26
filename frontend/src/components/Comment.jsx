@@ -12,7 +12,7 @@ const Comment = ({ postId, userId }) => {
   const fetchComments = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:5000/getComment", {
+      const res = await axios.get("https://aura-zwgl.onrender.com/getComment", {
         params: { postId },
         withCredentials: true,
       });
@@ -44,7 +44,7 @@ const Comment = ({ postId, userId }) => {
     try {
       setIsSubmitting(true);
       await axios.post(
-        "http://localhost:5000/addComment",
+        "https://aura-zwgl.onrender.com/addComment",
         { postId, userId, text: comment },
         { withCredentials: true }
       );

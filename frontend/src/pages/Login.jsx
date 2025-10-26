@@ -17,7 +17,7 @@ const Login = ({ setUser }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/login", form, {
+      const res = await axios.post("https://aura-zwgl.onrender.com/login", form, {
         withCredentials: true,
       });
       if (res.data && res.data.user) {

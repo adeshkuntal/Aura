@@ -26,7 +26,7 @@ const Profile = ({ user, setUser }) => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://localhost:5000/getPosts", {
+        const res = await axios.get("https://aura-zwgl.onrender.com/getPosts", {
           params: { userId: user?._id },
           withCredentials: true,
         });

@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://aura0.netlify.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
@@ -22,7 +22,7 @@ const io = socketIo(server, {
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://aura0.netlify.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -46,4 +46,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => console.log("User disconnected"));
 });
 
-server.listen(5000, () => console.log("Server running on port 5000"));
+// Server listen
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

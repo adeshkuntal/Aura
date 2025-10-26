@@ -38,7 +38,7 @@ const UploadPost = ({ user }) => {
       formData.append("description", description);
 
       const res = await axios.post(
-        "http://localhost:5000/uploadPost",
+        "https://aura-zwgl.onrender.com/uploadPost",
         formData,
         {
           withCredentials: true,

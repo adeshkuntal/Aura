@@ -18,7 +18,7 @@ const Search = () => {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const res = await axios.get("http://localhost:5000/getUsers", {
+        const res = await axios.get("https://aura-zwgl.onrender.com/getUsers", {
           params: { username },
           withCredentials: true,
         });

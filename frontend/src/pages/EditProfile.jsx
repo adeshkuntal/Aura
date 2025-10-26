@@ -42,7 +42,7 @@ const EditProfile = ({ user, setUser }) => {
       }
 
       const res = await axios.put(
-        "http://localhost:5000/updateprofile",
+        "https://aura-zwgl.onrender.com/updateprofile",
         formData,
         {
           withCredentials: true,

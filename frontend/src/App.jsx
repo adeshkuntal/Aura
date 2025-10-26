@@ -17,7 +17,7 @@ export default function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/me", { withCredentials: true });
+        const res = await axios.get("https://aura-zwgl.onrender.com/me", { withCredentials: true });
         setUser(res.data.user);
       } catch (err) {
         console.log("User fetch failed", err);

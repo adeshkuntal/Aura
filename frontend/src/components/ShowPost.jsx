@@ -11,7 +11,7 @@ const ShowPost = ({ postData, image, userId, onClose }) => {
   useEffect(() => {
     const fetchIsLiked = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/isLiked", {
+        const res = await axios.get("https://aura-zwgl.onrender.com/isLiked", {
           params: { postId: postData._id, Id: userId },
           withCredentials: true,
         });
@@ -27,7 +27,7 @@ const ShowPost = ({ postData, image, userId, onClose }) => {
   const handleLike = async () => {
     try {
       const res = await axios.put(
-        "http://localhost:5000/like",
+        "https://aura-zwgl.onrender.com/like",
         null,
         { params: { postId: postData._id, Id: userId }, withCredentials: true }
       );
@@ -47,7 +47,7 @@ const ShowPost = ({ postData, image, userId, onClose }) => {
     if (!window.confirm("Are you sure you want to delete this post?")) return;
 
     try {
-      const res = await axios.delete("http://localhost:5000/deletePost", {
+      const res = await axios.delete("https://aura-zwgl.onrender.com/deletePost", {
         params: { postId: postData._id },
         withCredentials: true,
       });

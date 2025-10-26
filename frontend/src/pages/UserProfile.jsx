@@ -16,7 +16,7 @@ const UserProfile = ({ user }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/getUser/${id}`, {
+        const res = await axios.get(`https://aura-zwgl.onrender.com/getUser/${id}`, {
           withCredentials: true,
         });
         setUserX(res.data.user);
@@ -38,7 +38,7 @@ const UserProfile = ({ user }) => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`http://localhost:5000/getPost/${id}`, {
+        const res = await axios.get(`https://aura-zwgl.onrender.com/getPost/${id}`, {
           withCredentials: true,
         });
         setPosts(res.data.posts || []);
@@ -69,8 +69,8 @@ const UserProfile = ({ user }) => {
   const handleFollow = async () => {
     try {
       const endpoint = isFollowing
-        ? "http://localhost:5000/unfollow"
-        : "http://localhost:5000/follow";
+        ? "https://aura-zwgl.onrender.com/unfollow"
+        : "https://aura-zwgl.onrender.com/follow";
 
       const res = await axios.post(
         endpoint,

@@ -17,7 +17,7 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/register", form);
+      const res = await axios.post("https://aura-zwgl.onrender.com/register", form);
       if (res.data) {
         setMessage("🎉 Registration successful! Redirecting to login...");
         setTimeout(() => navigate("/login"), 2000);

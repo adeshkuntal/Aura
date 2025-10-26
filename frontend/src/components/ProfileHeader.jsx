@@ -9,7 +9,7 @@ const ProfileHeader = ({ user, setUser }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/logout", {}, { withCredentials: true });
+      await axios.post("https://aura-zwgl.onrender.com/logout", {}, { withCredentials: true });
       setUser(null);
       navigate("/login");
     } catch (err) {
