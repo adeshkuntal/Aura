@@ -53,8 +53,9 @@ const ShowPost = ({ postData, image, userId, onClose }) => {
       });
 
       if (res.data.success) {
-        onClose(); 
-        window.location.reload(); 
+        alert("Post deleted successfully!");
+        onClose();
+        // window.location.reload(); 
       } else {
         alert("Failed to delete post");
       }
