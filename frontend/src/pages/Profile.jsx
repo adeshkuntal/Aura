@@ -173,7 +173,7 @@ const Profile = ({ user, setUser }) => {
           image={selectedPost.imageSrc}
           userId={selectedPost.userId}
           onClose={() => setSelectedPost(null)}
-          setPosts
+          setPosts={setPosts} 
         />
       )}
     </div>

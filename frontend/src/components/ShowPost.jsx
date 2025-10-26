@@ -53,8 +53,10 @@ const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
       });
 
       if (res.data.success) {
+        if (setPosts) {
+          setPosts((prevPosts) => prevPosts.filter((p) => p._id !== postData._id));
+        }
         onClose(); 
-        setPosts(posts.filter(post => post._id !== postData._id));
       } else {
         alert("Failed to delete post");
       }
