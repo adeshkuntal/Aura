@@ -1,7 +1,7 @@
-# netlify.toml (frontend at repo root)
 [build]
-  publish = "build"
+  base = "frontend"
   command = "npm run build"
+  publish = "frontend/build"
 
 [[redirects]]
   from = "/*"
