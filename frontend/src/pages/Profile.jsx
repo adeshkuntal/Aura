@@ -137,7 +137,7 @@ const Profile = ({ user, setUser }) => {
                 <div
                   key={post._id || i}
                   className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                  onClick={() => setSelectedPost({ post, imageSrc, userId: user?._id, fetchPosts })}
+                  onClick={() => setSelectedPost({ post, imageSrc, userId: user?._id, setPosts })}
                 >
                   <img
                     src={imageSrc}
@@ -173,7 +173,7 @@ const Profile = ({ user, setUser }) => {
           image={selectedPost.imageSrc}
           userId={selectedPost.userId}
           onClose={() => setSelectedPost(null)}
-          fetchPosts
+          setPosts
         />
       )}
     </div>
