@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Comment from "./Comment";
 
-const ShowPost = ({ postData, image, userId, onClose }) => {
+const ShowPost = ({ postData, image, userId, onClose, fetchPosts}) => {
   const [likes, setLikes] = useState(postData.likes || 0);
   const [isLiked, setIsLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -53,8 +53,8 @@ const ShowPost = ({ postData, image, userId, onClose }) => {
       });
 
       if (res.data.success) {
-        onClose();
-        window.location.reload(); 
+        fetchPosts();
+        onClose(); 
       } else {
         alert("Failed to delete post");
       }

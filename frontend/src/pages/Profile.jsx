@@ -22,22 +22,22 @@ const Profile = ({ user, setUser }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        const res = await axios.get("https://aura-zwgl.onrender.com/getPosts", {
-          params: { userId: user?._id },
-          withCredentials: true,
-        });
-        setPosts(res.data.posts);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("https://aura-zwgl.onrender.com/getPosts", {
+        params: { userId: user?._id },
+        withCredentials: true,
+      });
+      setPosts(res.data.posts);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (user?._id) fetchPosts();
   }, [user]);
 
@@ -137,7 +137,7 @@ const Profile = ({ user, setUser }) => {
                 <div
                   key={post._id || i}
                   className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                  onClick={() => setSelectedPost({ post, imageSrc, userId: user?._id })}
+                  onClick={() => setSelectedPost({ post, imageSrc, userId: user?._id, fetchPosts })}
                 >
                   <img
                     src={imageSrc}
@@ -173,6 +173,7 @@ const Profile = ({ user, setUser }) => {
           image={selectedPost.imageSrc}
           userId={selectedPost.userId}
           onClose={() => setSelectedPost(null)}
+          fetchPosts
         />
       )}
     </div>
