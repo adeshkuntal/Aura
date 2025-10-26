@@ -24,6 +24,7 @@ const ShowPost = ({ postData, image, userId, onClose }) => {
     if (postData._id && userId) fetchIsLiked();
   }, [postData._id, userId]);
 
+
   const handleLike = async () => {
     try {
       const res = await axios.put(
@@ -42,26 +43,6 @@ const ShowPost = ({ postData, image, userId, onClose }) => {
   };
 
   const handleImageLoad = () => setIsImageLoading(false);
-
-  const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
-
-    try {
-      const res = await axios.delete("http://localhost:5000/deletePost", {
-        params: { postId: postData._id },
-        withCredentials: true,
-      });
-
-      if (res.data.success) {
-        onClose(); 
-        window.location.reload(); 
-      } else {
-        alert("Failed to delete post");
-      }
-    } catch (err) {
-      console.error("Error deleting post:", err);
-    }
-  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-md bg-black/60 animate-fadeIn">
@@ -95,25 +76,14 @@ const ShowPost = ({ postData, image, userId, onClose }) => {
 
           <div className="md:w-1/2 flex flex-col h-full">
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
-              {/* Caption and Description Section with Delete Button */}
-              <div className="mb-6 relative">
-                <div className="pr-16">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3 leading-tight">
-                    {postData.caption || "✨ Beautiful Moment"}
-                  </h2>
-                  <p className="text-gray-600 leading-relaxed text-base">
-                    {postData.description ||
-                      "This is a beautiful moment captured by the user on Aura."}
-                  </p>
-                </div>
-                
-                {/* Delete Button - Top Right Corner */}
-                <button
-                  onClick={handleDelete}
-                  className="absolute top-0 right-0 flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold bg-gradient-to-r from-red-500 to-rose-600 text-white hover:scale-105 hover:shadow-lg transition-all duration-200 text-sm"
-                >
-                  🗑️ Delete
-                </button>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-3 leading-tight">
+                  {postData.caption || "✨ Beautiful Moment"}
+                </h2>
+                <p className="text-gray-600 leading-relaxed text-base">
+                  {postData.description ||
+                    "This is a beautiful moment captured by the user on Aura."}
+                </p>
               </div>
 
               <div className="flex items-center gap-6 mb-6 pb-4 border-b border-gray-200">

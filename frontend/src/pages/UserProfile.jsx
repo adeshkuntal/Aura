@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Footer from "../components/Footer";
-import ShowPost from "../components/ShowPost"; 
+import ShowUserpost from "../components/ShowUserpost";
 
-const UserProfile = ({user}) => {
+const UserProfile = ({ user }) => {
   const { id } = useParams();
   const [userX, setUserX] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   // ✅ Fetch User
   useEffect(() => {
@@ -19,12 +20,18 @@ const UserProfile = ({user}) => {
           withCredentials: true,
         });
         setUserX(res.data.user);
+
+        // check if current user follows this profile
+        if (res.data.user.followedBy?.includes(user?._id)) {
+          setIsFollowing(true);
+        }
       } catch (err) {
         console.error(err);
       }
     };
     fetchUser();
-  }, [id]);
+  }, [id, user?._id]);
+
 
   // ✅ Fetch User Posts
   useEffect(() => {
@@ -44,6 +51,7 @@ const UserProfile = ({user}) => {
     fetchPosts();
   }, [id]);
 
+
   // ✅ Convert image buffer to Base64
   const arrayBufferToBase64 = (buffer) => {
     if (!buffer || !buffer.data) return "";
@@ -56,6 +64,52 @@ const UserProfile = ({user}) => {
       return "";
     }
   };
+
+  
+  const handleFollow = async () => {
+    try {
+      const endpoint = isFollowing
+        ? "http://localhost:5000/unfollow"
+        : "http://localhost:5000/follow";
+
+      const res = await axios.post(
+        endpoint,
+        {
+          user1: user?._id, // logged-in user
+          user2: id, // profile user
+        },
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        setIsFollowing(!isFollowing);
+
+        // ✅ update followers/following count instantly without reload
+        setUserX((prev) => {
+          if (!prev){
+            return prev;
+          }
+          if (isFollowing) {
+            // unfollow
+            return {
+              ...prev,
+              followedBy: prev.followedBy.filter((uid) => uid !== user?._id),
+            };
+          } else {
+            // follow
+            return {
+              ...prev,
+              followedBy: [...(prev.followedBy || []), user?._id],
+            };
+          }
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
 
   if (!userX)
     return (
@@ -99,14 +153,24 @@ const UserProfile = ({user}) => {
                 {userX.fullname || "Aura Member"}
               </p>
             </div>
+            <button
+              onClick={handleFollow}
+              className={`px-6 py-2 font-semibold rounded-full transition-colors duration-200 shadow-sm hover:shadow-md active:shadow-inner ${
+                isFollowing
+                  ? "bg-gray-300 text-gray-800 hover:bg-gray-400"
+                  : "bg-blue-500 hover:bg-blue-600 text-white"
+              }`}
+            >
+              {isFollowing ? "Unfollow" : "Follow"}
+            </button>
           </div>
 
           {/* Stats */}
           <div className="flex justify-center md:justify-start gap-10 mb-3">
             {[
               { label: "Posts", value: posts?.length || 0 },
-              { label: "Followers", value: userX.followers || 0 },
-              { label: "Following", value: userX.following || 0 },
+              { label: "Followers", value: userX.followedBy?.length || 0 },
+              { label: "Following", value: userX.isFollowing?.length || 0 },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <span className="block text-xl font-bold text-gray-900">
@@ -183,7 +247,7 @@ const UserProfile = ({user}) => {
 
       {/* ShowPost Modal */}
       {selectedPost && (
-        <ShowPost
+        <ShowUserpost
           postData={selectedPost.post}
           image={selectedPost.imageSrc}
           userId={selectedPost.userId}

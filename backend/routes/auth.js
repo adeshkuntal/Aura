@@ -32,7 +32,10 @@ router.post("/register", async (req, res) => {
         contentType: "",
       },
       bio: "enter your bio here ...",
+      followedBy: [],
+      isFollowing: [],
     });
+
     await newUser.save();
 
     res.json({ message: "User registered successfully" });
@@ -41,6 +44,7 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 router.post("/login", async (req, res) => {
@@ -163,6 +167,20 @@ router.get("/getPosts", async (req, res) => {
     res.json({posts});
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete("/deletePost", async (req, res) => {
+  try {
+    const { postId } = req.query;
+    const deleted = await Post.findByIdAndDelete(postId);
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Post not found" });
+    }
+    res.json({ success: true, message: "Post deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting post:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
@@ -300,6 +318,68 @@ router.get("/getPost/:id", async (req, res) => {
 
 
 
+router.post("/follow", async (req, res) => {
+  try {
+    const { user1, user2 } = req.body;
+
+    if (user1 === user2) {
+      return res.status(400).json({ message: "You cannot follow yourself" });
+    }
+
+    const User1 = await User.findById(user1);
+    const User2 = await User.findById(user2);
+
+    if (!User1 || !User2) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Prevent duplicate follows
+    if (User1.isFollowing.includes(user2)) {
+      return res.status(400).json({ message: "Already following this user" });
+    }
+
+    User1.isFollowing.push(user2);
+    User2.followedBy.push(user1);
+
+    await User1.save();
+    await User2.save();
+
+    res.json({ success: true, message: "Followed successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+
+
+router.post("/unfollow", async (req, res) => {
+  try {
+    const { user1, user2 } = req.body;
+
+    const User1 = await User.findById(user1);
+    const User2 = await User.findById(user2);
+
+    if (!User1 || !User2) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    User1.isFollowing = User1.isFollowing.filter(
+      (id) => id.toString() !== user2
+    );
+    User2.followedBy = User2.followedBy.filter(
+      (id) => id.toString() !== user1
+    );
+
+    await User1.save();
+    await User2.save();
+
+    res.json({ success: true, message: "Unfollowed successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 
 

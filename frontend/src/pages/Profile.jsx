@@ -9,6 +9,7 @@ const Profile = ({ user, setUser }) => {
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState(null);
 
+
   const arrayBufferToBase64 = (buffer) => {
     if (!buffer || !buffer.data) return "";
     try {
@@ -95,8 +96,8 @@ const Profile = ({ user, setUser }) => {
             <div className="flex justify-center md:justify-start gap-10 mb-3">
               {[
                 { label: "Posts", value: posts?.length || 0 },
-                { label: "Followers", value: user.followers || 0 },
-                { label: "Following", value: user.following || 0 },
+                { label: "Followers", value: user.followedBy?.length || 0 },
+                { label: "Following", value: user.isFollowing?.length || 0 },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
                   <span className="block text-xl font-bold text-gray-900">{stat.value}</span>
