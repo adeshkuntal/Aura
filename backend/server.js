@@ -36,16 +36,18 @@ app.use(cookieParser());
 app.use(authRoutes);
 
 // Socket.IO
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+// io.on("connection", (socket) => {
+//   console.log("User connected:", socket.id);
 
-  socket.on("sendMessage", (msg) => {
-    io.emit("receiveMessage", msg);
-  });
+//   socket.on("sendMessage", (msg) => {
+//     io.emit("receiveMessage", msg);
+//   });
 
-  socket.on("disconnect", () => console.log("User disconnected"));
-});
+//   socket.on("disconnect", () => console.log("User disconnected"));
+// });
 
-// Server listen
+// const PORT = process.env.PORT || 5000;
+// server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
