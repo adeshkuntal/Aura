@@ -11,6 +11,7 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
+
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -78,6 +79,8 @@ router.post("/login", async (req, res) => {
 });
 
 
+
+
 router.get("/me", async (req, res) => {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ user: null });
@@ -96,6 +99,8 @@ router.get("/me", async (req, res) => {
     res.status(401).json({ user: null });
   }
 });
+
+
 
 
 router.put("/updateprofile", upload.single("profilePic"), async (req, res) => {
@@ -130,6 +135,7 @@ router.put("/updateprofile", upload.single("profilePic"), async (req, res) => {
 
 
 
+
 //Upload Post
 router.post("/uploadPost", upload.single("file"), async (req, res) => {
   try {
@@ -160,6 +166,7 @@ router.post("/uploadPost", upload.single("file"), async (req, res) => {
 });
 
 
+
 router.get("/getPosts", async (req, res) => {
   try {
     const userId = req.query.userId;
@@ -169,6 +176,7 @@ router.get("/getPosts", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 router.delete("/deletePost", async (req, res) => {
   try {
@@ -185,13 +193,13 @@ router.delete("/deletePost", async (req, res) => {
 });
 
 
+
 router.put("/like", async (req, res) => {
   try {
     const { postId, Id } = req.query;
     if (!postId || !Id){
       return res.status(400).json({ success: false, message: "Missing IDs" });
     }
-
     const post = await Post.findById(postId);
     if (!post){
       return res.status(404).json({ success: false, message: "Post not found" });
@@ -216,6 +224,7 @@ router.put("/like", async (req, res) => {
 });
 
 
+
 router.get("/isLiked", async (req, res) => {
   try {
     const { postId, Id } = req.query;
@@ -237,6 +246,7 @@ router.get("/isLiked", async (req, res) => {
 });
 
 
+
 router.post("/addComment", async (req, res) => {
   try {
     const { postId, userId, text } = req.body;
@@ -255,6 +265,7 @@ router.post("/addComment", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 router.get("/getComment", async (req, res) => {
@@ -291,6 +302,7 @@ router.get("/getUsers", async (req, res) => {
 });
 
 
+
 router.get("/getUser/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -305,6 +317,7 @@ router.get("/getUser/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 router.get("/getPost/:id", async (req, res) => {
   try {
