@@ -12,12 +12,12 @@ const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
     const fetchIsLiked = async () => {
       try {
         const res = await axios.get("https://aura-zwgl.onrender.com/isLiked", {
-          params: { postId: postData._id, userId: userId },
+          params: { postId: postData._id, Id: userId },
           withCredentials: true,
         });
         setIsLiked(res.data.isliked);
       } catch (err) {
-        console.log("Error checking like status:", err);
+        console.log(err);
       }
     };
 
@@ -28,16 +28,8 @@ const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
     try {
       const res = await axios.put(
         "https://aura-zwgl.onrender.com/like",
-        { 
-          postId: postData._id, 
-          userId: userId 
-        },
-        { 
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+        null,
+        { params: { postId: postData._id, Id: userId }, withCredentials: true }
       );
 
       if (res.data?.success) {
@@ -46,7 +38,6 @@ const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
       }
     } catch (err) {
       console.error("Error liking post:", err);
-      alert("Failed to like post. Please try again.");
     }
   };
 
@@ -118,15 +109,13 @@ const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
                   </p>
                 </div>
                 
-                {/* Delete Button - Only show if user owns the post */}
-                {userId === postData.userId && (
-                  <button
-                    onClick={handleDelete}
-                    className="absolute top-0 right-0 flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold bg-gradient-to-r from-red-500 to-rose-600 text-white hover:scale-105 hover:shadow-lg transition-all duration-200 text-sm"
-                  >
-                    🗑️ Delete
-                  </button>
-                )}
+                {/* Delete Button - Top Right Corner */}
+                <button
+                  onClick={handleDelete}
+                  className="absolute top-0 right-0 flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold bg-gradient-to-r from-red-500 to-rose-600 text-white hover:scale-105 hover:shadow-lg transition-all duration-200 text-sm"
+                >
+                  🗑️ Delete
+                </button>
               </div>
 
               <div className="flex items-center gap-6 mb-6 pb-4 border-b border-gray-200">
@@ -142,12 +131,11 @@ const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleLike}
-                  disabled={!userId}
                   className={`flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all duration-300 ${
                     isLiked
                       ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg hover:scale-105"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  } ${!userId ? "opacity-50 cursor-not-allowed" : ""}`}
+                  }`}
                 >
                   <span className="text-lg">{isLiked ? "❤️" : "🤍"}</span>
                   <span>{isLiked ? "Liked" : "Like"}</span>

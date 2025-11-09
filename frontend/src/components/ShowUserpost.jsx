@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Comment from "./Comment";
 
-const ShowUserpost = ({ postData, image, userId, onClose }) => {
+const ShowPost = ({ postData, image, userId, onClose }) => {
   const [likes, setLikes] = useState(postData.likes || 0);
   const [isLiked, setIsLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -12,32 +12,25 @@ const ShowUserpost = ({ postData, image, userId, onClose }) => {
     const fetchIsLiked = async () => {
       try {
         const res = await axios.get("https://aura-zwgl.onrender.com/isLiked", {
-          params: { postId: postData._id, userId: userId },
+          params: { postId: postData._id, Id: userId },
           withCredentials: true,
         });
         setIsLiked(res.data.isliked);
       } catch (err) {
-        console.log("Error checking like status:", err);
+        console.log(err);
       }
     };
 
     if (postData._id && userId) fetchIsLiked();
   }, [postData._id, userId]);
 
+
   const handleLike = async () => {
     try {
       const res = await axios.put(
         "https://aura-zwgl.onrender.com/like",
-        { 
-          postId: postData._id, 
-          userId: userId 
-        },
-        { 
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+        null,
+        { params: { postId: postData._id, Id: userId }, withCredentials: true }
       );
 
       if (res.data?.success) {
@@ -46,7 +39,6 @@ const ShowUserpost = ({ postData, image, userId, onClose }) => {
       }
     } catch (err) {
       console.error("Error liking post:", err);
-      alert("Failed to like post. Please try again.");
     }
   };
 
@@ -107,12 +99,11 @@ const ShowUserpost = ({ postData, image, userId, onClose }) => {
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleLike}
-                  disabled={!userId}
                   className={`flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all duration-300 ${
                     isLiked
                       ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg hover:scale-105"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  } ${!userId ? "opacity-50 cursor-not-allowed" : ""}`}
+                  }`}
                 >
                   <span className="text-lg">{isLiked ? "❤️" : "🤍"}</span>
                   <span>{isLiked ? "Liked" : "Like"}</span>
@@ -143,4 +134,4 @@ const ShowUserpost = ({ postData, image, userId, onClose }) => {
   );
 };
 
-export default ShowUserpost;
+export default ShowPost;

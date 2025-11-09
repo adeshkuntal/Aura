@@ -1,3 +1,4 @@
+// Comment.jsx
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
@@ -56,22 +57,8 @@ const Comment = ({ postId, userId }) => {
     }
   };
 
-  // Safe username access with fallback
-  const getUsername = (comment) => {
-    if (!comment.userId) return "Unknown User";
-    if (typeof comment.userId === 'string') return comment.userId;
-    return comment.userId.username || "Unknown User";
-  };
-
-  // Safe user initial access
-  getUserInitial = (comment) => {
-    if (!comment.userId) return "U";
-    if (typeof comment.userId === 'string') return comment.userId.charAt(0).toUpperCase();
-    return comment.userId.username?.charAt(0)?.toUpperCase() || "U";
-  };
-
   return (
-    <div className="flex flex-col h-full max-h-[400px]">
+    <div className="flex flex-col h-full max-h-[400px]"> {/* Fixed height container */}
       {/* Comments Header */}
       <div className="flex items-center justify-between mb-4 flex-shrink-0">
         <h3 className="text-lg font-semibold text-gray-800">Comments</h3>
@@ -81,7 +68,7 @@ const Comment = ({ postId, userId }) => {
       </div>
 
       {/* Scrollable Comments List */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar mb-4 min-h-0">
+      <div className="flex-1 overflow-y-auto custom-scrollbar mb-4 min-h-0"> {/* Flexible space for comments */}
         {isLoading ? (
           <div className="flex justify-center py-4">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
@@ -95,10 +82,10 @@ const Comment = ({ postId, userId }) => {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-6 h-6 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    {getUserInitial(c)}
+                    {c.userId.username?.charAt(0)?.toUpperCase() || "U"}
                   </div>
                   <span className="font-semibold text-gray-800 text-sm">
-                    {getUsername(c)}
+                    {c.userId.username}
                   </span>
                 </div>
                 <p className="text-gray-700 text-sm pl-8">{c.text}</p>
@@ -111,13 +98,13 @@ const Comment = ({ postId, userId }) => {
                 <p className="text-gray-400 text-xs">Be the first to share your thoughts!</p>
               </div>
             )}
-            <div ref={commentsEndRef} />
+            <div ref={commentsEndRef} /> {/* Invisible element to scroll to */}
           </div>
         )}
       </div>
 
       {/* Fixed Comment Input */}
-      <div className="flex-shrink-0 bg-white pt-4 border-t border-gray-200">
+      <div className="flex-shrink-0 bg-white pt-4 border-t border-gray-200"> {/* Fixed position input */}
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-3"
@@ -137,9 +124,9 @@ const Comment = ({ postId, userId }) => {
           </div>
           <button
             type="submit"
-            disabled={isSubmitting || !comment.trim() || !userId}
+            disabled={isSubmitting || !comment.trim()}
             className={`self-end px-5 py-2.5 rounded-lg text-white font-medium transition-all duration-200 shadow-md flex items-center gap-2 ${
-              isSubmitting || !comment.trim() || !userId
+              isSubmitting || !comment.trim()
                 ? "bg-gray-400 cursor-not-allowed opacity-60"
                 : "bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 hover:shadow-lg transform hover:-translate-y-0.5"
             }`}
@@ -155,6 +142,8 @@ const Comment = ({ postId, userId }) => {
           </button>
         </form>
       </div>
+
+      
     </div>
   );
 };
