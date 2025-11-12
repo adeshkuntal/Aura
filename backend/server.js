@@ -10,14 +10,14 @@ const cookieParser = require("cookie-parser");
 connectDB();
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: ["https://aura0.netlify.app", "https://aura0-jade.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  },
-});
+// const server = http.createServer(app);
+// const io = socketIo(server, {
+//   cors: {
+//     origin: ["https://aura0.netlify.app", "https://aura0-jade.vercel.app"],
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   },
+// });
 
 // Middleware
 app.use(
