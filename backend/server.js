@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "https://aura0.netlify.app",
+    origin: ["https://aura0.netlify.app", "https://aura0-jade.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
@@ -22,7 +22,7 @@ const io = socketIo(server, {
 // Middleware
 app.use(
   cors({
-    origin: "https://aura0.netlify.app",
+    origin: ["https://aura0.netlify.app", "https://aura0-jade.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
