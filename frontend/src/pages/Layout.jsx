@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import ProfileHeader from "../components/ProfileHeader";
-import Footer from "../components/Footer";
+
 
 const Layout = ({ user, setUser }) => {
   return (

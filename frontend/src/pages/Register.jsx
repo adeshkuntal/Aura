@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+const backend = import.meta.env.BACKEND_API;
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -17,7 +18,7 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("https://aura-zwgl.onrender.com/register", form);
+      const res = await axios.post(`${backend}/register`, form);
       if (res.data) {
         setMessage("🎉 Registration successful! Redirecting to login...");
         setTimeout(() => navigate("/login"), 2000);

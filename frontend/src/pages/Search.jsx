@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+const backend = import.meta.env.BACKEND_API;
 
 const Search = () => {
   const [username, setUsername] = useState("");
@@ -18,7 +19,7 @@ const Search = () => {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const res = await axios.get("https://aura-zwgl.onrender.com/getUsers", {
+        const res = await axios.get(`${backend}/getUsers`, {
           params: { username },
           withCredentials: true,
         });

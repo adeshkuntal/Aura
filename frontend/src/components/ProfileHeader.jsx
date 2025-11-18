@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { LogOut, User, PlusCircle, Search, Menu, X } from "lucide-react";
+const backend = import.meta.env.BACKEND_API;
 
 const ProfileHeader = ({ user, setUser }) => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const ProfileHeader = ({ user, setUser }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("https://aura-zwgl.onrender.com/logout", {}, { withCredentials: true });
+      await axios.post(`${backend}/logout`, {}, { withCredentials: true });
       setUser(null);
       navigate("/login");
     } catch (err) {

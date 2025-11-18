@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import ShowPost from "../components/ShowPost";
 import axios from "axios";
+const backend = import.meta.env.BACKEND_API;
 
 const Profile = ({ user, setUser }) => {
   const [posts, setPosts] = useState(null);
@@ -25,7 +26,7 @@ const Profile = ({ user, setUser }) => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("https://aura-zwgl.onrender.com/getPosts", {
+      const res = await axios.get(`${backend}/getPosts`, {
         params: { userId: user?._id },
         withCredentials: true,
       });

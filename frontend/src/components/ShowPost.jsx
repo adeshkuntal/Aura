@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Comment from "./Comment";
+const backend = import.meta.env.BACKEND_API;
 
 const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
   const [likes, setLikes] = useState(postData.likes || 0);
@@ -11,7 +12,7 @@ const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
   useEffect(() => {
     const fetchIsLiked = async () => {
       try {
-        const res = await axios.get("https://aura-zwgl.onrender.com/isLiked", {
+        const res = await axios.get(`${backend}/isLiked`, {
           params: { postId: postData._id, Id: userId },
           withCredentials: true,
         });
@@ -27,7 +28,7 @@ const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
   const handleLike = async () => {
     try {
       const res = await axios.put(
-        "https://aura-zwgl.onrender.com/like",
+        `${backend}/like`,
         {}, // Empty body since we're using query params
         { 
           params: { 
@@ -54,7 +55,7 @@ const ShowPost = ({ postData, image, userId, onClose, setPosts}) => {
     if (!window.confirm("Are you sure you want to delete this post?")) return;
 
     try {
-      const res = await axios.delete("https://aura-zwgl.onrender.com/deletePost", {
+      const res = await axios.delete(`${backend}/deletePost`, {
         params: { postId: postData._id },
         withCredentials: true,
       });

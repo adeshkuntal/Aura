@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+const backend = import.meta.env.BACKEND_API;
 
 const Login = ({ setUser }) => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -17,7 +18,7 @@ const Login = ({ setUser }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("https://aura-zwgl.onrender.com/login", form, {
+      const res = await axios.post(`${backend}/login`, form, {
         withCredentials: true,
       });
       if (res.data && res.data.user) {

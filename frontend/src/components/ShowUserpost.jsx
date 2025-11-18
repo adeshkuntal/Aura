@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Comment from "./Comment";
+const backend = import.meta.env.BACKEND_API;
 
 const ShowUserpost = ({ postData, image, userId, onClose }) => {
   const [likes, setLikes] = useState(postData.likes || 0);
@@ -11,7 +12,7 @@ const ShowUserpost = ({ postData, image, userId, onClose }) => {
   useEffect(() => {
     const fetchIsLiked = async () => {
       try {
-        const res = await axios.get("https://aura-zwgl.onrender.com/isLiked", {
+        const res = await axios.get(`${backend}/isLiked`, {
           params: { postId: postData._id, Id: userId },
           withCredentials: true,
         });
@@ -27,7 +28,7 @@ const ShowUserpost = ({ postData, image, userId, onClose }) => {
   const handleLike = async () => {
     try {
       const res = await axios.put(
-        "https://aura-zwgl.onrender.com/like",
+        `${backend}/like`,
         {}, // Empty body since we're using query params
         { 
           params: { 

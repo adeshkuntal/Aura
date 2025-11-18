@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import ShowUserpost from "../components/ShowUserpost";
+const backend = import.meta.env.BACKEND_API;
 
 const UserProfile = ({ user }) => {
   const { id } = useParams();
@@ -16,7 +17,7 @@ const UserProfile = ({ user }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`https://aura-zwgl.onrender.com/getUser/${id}`, {
+        const res = await axios.get(`${backend}/getUser/${id}`, {
           withCredentials: true,
         });
         setUserX(res.data.user);
@@ -38,7 +39,7 @@ const UserProfile = ({ user }) => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`https://aura-zwgl.onrender.com/getPost/${id}`, {
+        const res = await axios.get(`${backend}/getPost/${id}`, {
           withCredentials: true,
         });
         setPosts(res.data.posts || []);
@@ -69,8 +70,8 @@ const UserProfile = ({ user }) => {
   const handleFollow = async () => {
     try {
       const endpoint = isFollowing
-        ? "https://aura-zwgl.onrender.com/unfollow"
-        : "https://aura-zwgl.onrender.com/follow";
+        ? `${backend}/unfollow`
+        : `${backend}/follow`;
 
       const res = await axios.post(
         endpoint,

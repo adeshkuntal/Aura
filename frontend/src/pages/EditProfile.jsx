@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const backend = import.meta.env.BACKEND_API;
 
 const EditProfile = ({ user, setUser }) => {
   const [form, setForm] = useState({
@@ -42,7 +43,7 @@ const EditProfile = ({ user, setUser }) => {
       }
 
       const res = await axios.put(
-        "https://aura-zwgl.onrender.com/updateprofile",
+        `${backend}/updateprofile`,
         formData,
         {
           withCredentials: true,

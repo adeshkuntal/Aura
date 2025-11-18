@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+const backend = import.meta.env.BACKEND_API;
 
 const UploadPost = ({ user }) => {
   const [file, setFile] = useState(null);
@@ -38,7 +39,7 @@ const UploadPost = ({ user }) => {
       formData.append("description", description);
 
       const res = await axios.post(
-        "https://aura-zwgl.onrender.com/uploadPost",
+        `${backend}/uploadPost`,
         formData,
         {
           withCredentials: true,

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+const backend = import.meta.env.BACKEND_API;
 
 const Comment = ({ postId, userId }) => {
   const [comment, setComment] = useState("");
@@ -11,7 +12,7 @@ const Comment = ({ postId, userId }) => {
   const fetchComments = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("https://aura-zwgl.onrender.com/getComment", {
+      const res = await axios.get(`${backend}/getComment`, {
         params: { postId },
         withCredentials: true,
       });
@@ -43,7 +44,7 @@ const Comment = ({ postId, userId }) => {
     try {
       setIsSubmitting(true);
       await axios.post(
-        "https://aura-zwgl.onrender.com/addComment",
+        `${backend}/addComment`,
         { postId, userId, text: comment },
         { withCredentials: true }
       );

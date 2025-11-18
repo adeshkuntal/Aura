@@ -9,6 +9,7 @@ import UploadPost from "./pages/UploadPost";
 import Search from "./pages/Search";
 import UserProfile from "./pages/UserProfile";
 import axios from "axios";
+const backend = import.meta.env.BACKEND_API;
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -17,7 +18,7 @@ export default function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("https://aura-zwgl.onrender.com/me", { withCredentials: true });
+        const res = await axios.get(`${backend}/me`, { withCredentials: true });
         setUser(res.data.user);
       } catch (err) {
         console.log("User fetch failed", err);
