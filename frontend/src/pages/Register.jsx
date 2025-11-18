@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-const backend = import.meta.env.BACKEND_API;
+const backend = import.meta.env.VITE_BACKEND_API;
+
 
 const Register = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });

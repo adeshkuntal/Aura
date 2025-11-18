@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import ShowPost from "../components/ShowPost";
 import axios from "axios";
-const backend = import.meta.env.BACKEND_API;
+const backend = import.meta.env.VITE_BACKEND_API;
+
 
 const Profile = ({ user, setUser }) => {
   const [posts, setPosts] = useState(null);

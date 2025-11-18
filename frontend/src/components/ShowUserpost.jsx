@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Comment from "./Comment";
-const backend = import.meta.env.BACKEND_API;
+const backend = import.meta.env.VITE_BACKEND_API;
+
 
 const ShowUserpost = ({ postData, image, userId, onClose }) => {
   const [likes, setLikes] = useState(postData.likes || 0);

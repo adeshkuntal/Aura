@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const backend = import.meta.env.BACKEND_API;
+const backend = import.meta.env.VITE_BACKEND_API;
+
 
 const EditProfile = ({ user, setUser }) => {
   const [form, setForm] = useState({

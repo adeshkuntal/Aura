@@ -9,7 +9,8 @@ import UploadPost from "./pages/UploadPost";
 import Search from "./pages/Search";
 import UserProfile from "./pages/UserProfile";
 import axios from "axios";
-const backend = import.meta.env.BACKEND_API;
+const backend = import.meta.env.VITE_BACKEND_API;
+
 
 export default function App() {
   const [user, setUser] = useState(null);

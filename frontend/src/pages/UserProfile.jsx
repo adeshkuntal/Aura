@@ -3,7 +3,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import ShowUserpost from "../components/ShowUserpost";
-const backend = import.meta.env.BACKEND_API;
+const backend = import.meta.env.VITE_BACKEND_API;
+
 
 const UserProfile = ({ user }) => {
   const { id } = useParams();

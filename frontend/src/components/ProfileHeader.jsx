@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { LogOut, User, PlusCircle, Search, Menu, X } from "lucide-react";
-const backend = import.meta.env.BACKEND_API;
+const backend = import.meta.env.VITE_BACKEND_API;
+
 
 const ProfileHeader = ({ user, setUser }) => {
   const navigate = useNavigate();
