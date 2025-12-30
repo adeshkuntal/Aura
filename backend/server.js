@@ -22,7 +22,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: ["https://aura0.netlify.app", "https://aura0-jade.vercel.app"],
+    origin: ["https://aura0.netlify.app", "https://aura0-jade.vercel.app","http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

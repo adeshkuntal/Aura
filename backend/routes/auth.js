@@ -4,7 +4,8 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-const mongoose = require("mongoose");
+const cloudinary = require("../config/cloudinary");
+const Reel = require("../models/Reel");
 const router = express.Router();
 
 // Multer config (memory storage for MongoDB)
@@ -396,6 +397,158 @@ router.post("/unfollow", async (req, res) => {
 
 
 
+//Reel Upload
+router.post("/upload-reel", upload.single("video"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Video required" });
+    }
+
+    cloudinary.uploader.upload_stream(
+      {
+        resource_type: "video",
+        folder: "aura_reels",
+      },
+      async (error, uploadResult) => {
+        if (error) {
+          console.error("Cloudinary error:", error);
+          return res.status(500).json({ message: "Upload failed" });
+        }
+
+        const reel = await Reel.create({
+          userId: req.body.userId,
+          videoUrl: uploadResult.secure_url,
+          caption: req.body.caption,
+          description: req.body.description,
+          likes: [],
+          comments: [],
+        });
+
+        res.status(201).json(reel);
+      }
+    ).end(req.file.buffer);
+
+  } catch (err) {
+    console.error("Server error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+//Fetch Reels
+router.get("/getReels", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const reels = await Reel.find({ userId: userId });
+    res.json({reels});
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+// LIKE / UNLIKE REEL
+router.post("/likeReel", async (req, res) => {
+  try {
+    const { reelId, Id } = req.body;
+    if (!reelId || !Id){
+      return res.status(400).json({ success: false, message: "Missing IDs" });
+    }
+    const reel = await Reel.findById(reelId);
+    if (!reel){
+      return res.status(404).json({ success: false, message: "Post not found" });
+    }
+    reel.likes = reel.likes || [];
+    const liked = reel.likes.some((user) => user.toString() === Id);
+
+    if (liked) {
+      reel.likes.pull(Id);
+    } else {
+      reel.likes.push(Id);
+    }
+
+    await reel.save();
+    res.json({ success: true,isLiked: !liked,likes: reel.likes.length });
+  } catch (err) {
+    console.error("Error in like:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+router.get("/isLikedReel", async (req, res) => {
+  try {
+    const { reelId, Id } = req.query;
+    const reel = await Reel.findById(reelId);
+
+    if (!reel) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const isliked = reel.likes.some(
+      (user) => user.toString() === Id
+    );
+
+    res.json({ isliked,likes: reel.likes.length });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ADD COMMENT
+router.post("/addReelComment", async (req, res) => {
+  try {
+    const { reelId, userId, text } = req.body;
+
+    if (!reelId || !userId || !text) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    const reel = await Reel.findById(reelId);
+
+    reel.comments = reel.comments || [];
+    reel.comments.push({ userId, text });
+    await reel.save();
+    res.status(201).json({ message: "Comment successfully added" });
+  } catch (err) {
+    console.error("Error adding comment:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+router.get("/getReelComment", async (req, res) => {
+  try {
+    const { reelId } = req.query;
+
+    const reel = await Reel.findById(reelId).populate("comments.userId", "username"); 
+
+    if (!reel) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json({ comments: reel.comments});
+  } catch (err) {
+    console.error("Error fetching comments:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+// DELETE REEL
+router.delete("/deleteReel/:id", async (req, res) => {
+  try {
+    const reel = await Reel.findByIdAndDelete(req.params.id);
+    if (!reel) {
+      return res.status(404).json({ message: "Reel not found" });
+    }
+    res.json({ message: "Reel deleted Successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Delete failed" });
+  }
+});
+
+
 // Logout route
 router.post("/logout", (req, res) => {
   res.clearCookie("token");
@@ -403,3 +556,5 @@ router.post("/logout", (req, res) => {
 });
 
 module.exports = router;
+
+
