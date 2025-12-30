@@ -8,6 +8,7 @@ import EditProfile from "./pages/EditProfile";
 import UploadPost from "./pages/UploadPost";
 import Search from "./pages/Search";
 import UserProfile from "./pages/UserProfile";
+import UploadReel from "./pages/UploadReel";
 import axios from "axios";
 const backend = import.meta.env.VITE_BACKEND_API;
 
@@ -55,6 +56,7 @@ export default function App() {
           <Route path="upload-post" element={<UploadPost user={user} />} />
           <Route path="search" element={<Search user={user} />} />
           <Route path="search/:id" element={<UserProfile user={user} />} />
+          <Route path="upload-reel" element={<UploadReel user={user} />} />
         </Route>
       </Routes>
     </Router>

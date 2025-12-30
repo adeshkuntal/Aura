@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { LogOut, User, PlusCircle, Search, Menu, X } from "lucide-react";
+import { LogOut, User, PlusCircle, Video, Search, Menu, X } from "lucide-react";
 const backend = import.meta.env.VITE_BACKEND_API;
 
 
@@ -23,6 +23,7 @@ const ProfileHeader = ({ user, setUser }) => {
   const navItems = [
     { name: "Profile", path: "/home", icon: <User size={20} /> },
     { name: "Upload Post", path: "/home/upload-post", icon: <PlusCircle size={20} /> },
+    { name: "Upload Reel", path: "/home/upload-reel", icon: <Video size={20} /> },
     { name: "Search", path: "/home/search", icon: <Search size={20} /> },
   ];
 

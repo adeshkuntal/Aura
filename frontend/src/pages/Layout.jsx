@@ -11,7 +11,7 @@ const Layout = ({ user, setUser }) => {
 
       {/* Main Content */}
       <div className="flex-1 ml-64 relative flex flex-col">
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>
       </div>
