@@ -7,6 +7,7 @@ const multer = require("multer");
 const cloudinary = require("../config/cloudinary");
 const Reel = require("../models/Reel");
 const router = express.Router();
+const streamifier = require("streamifier");
 
 // Multer config (memory storage for MongoDB)
 const storage = multer.memoryStorage();
@@ -408,7 +409,7 @@ router.post("/upload-reel", upload.single("video"), async (req, res) => {
       return res.status(400).json({ message: "Video required" });
     }
 
-    cloudinary.uploader.upload_stream(
+    const stream = cloudinary.uploader.upload_stream(
       {
         resource_type: "video",
         folder: "aura_reels",
@@ -430,13 +431,17 @@ router.post("/upload-reel", upload.single("video"), async (req, res) => {
 
         res.status(201).json(reel);
       }
-    ).end(req.file.buffer);
+    );
+
+    //THIS IS THE FIX
+    streamifier.createReadStream(req.file.buffer).pipe(stream);
 
   } catch (err) {
     console.error("Server error:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 
