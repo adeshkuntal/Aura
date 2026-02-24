@@ -3,17 +3,23 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const Post = require("../models/Post");
 const jwt = require("jsonwebtoken");
-const multer = require("multer");
 const cloudinary = require("../config/cloudinary");
 const Reel = require("../models/Reel");
 const router = express.Router();
-const streamifier = require("streamifier");
 
 // Multer config (memory storage for MongoDB)
-const storage = multer.memoryStorage();
+const multer = require("multer");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
 const upload = multer({
   storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB
+  limits: { fileSize: 100 * 1024 * 1024 },
 });
 
 
@@ -409,35 +415,36 @@ router.post("/upload-reel", upload.single("video"), async (req, res) => {
       return res.status(400).json({ message: "Video required" });
     }
 
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        resource_type: "video",
-        folder: "aura_reels",
-      },
-      async (error, uploadResult) => {
-        if (error) {
-          console.error("Cloudinary error:", error);
-          return res.status(500).json({ message: "Upload failed" });
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_large(
+        req.file.path,
+        {
+          resource_type: "video",
+          folder: "aura_reels",
+        },
+        (error, uploadResult) => {
+          if (error) reject(error);
+          else resolve(uploadResult);
         }
+      );
+    });
 
-        const reel = await Reel.create({
-          userId: req.body.userId,
-          videoUrl: uploadResult.secure_url,
-          caption: req.body.caption,
-          description: req.body.description,
-          likes: [],
-          comments: [],
-        });
+    const reel = await Reel.create({
+      userId: req.body.userId,
+      videoUrl: result.secure_url,
+      caption: req.body.caption,
+      description: req.body.description,
+      likes: [],
+      comments: [],
+    });
 
-        res.status(201).json(reel);
-      }
-    );
+    const fs = require("fs");
+    fs.unlinkSync(req.file.path);
 
-    //THIS IS THE FIX
-    streamifier.createReadStream(req.file.buffer).pipe(stream);
+    res.status(201).json(reel);
 
   } catch (err) {
-    console.error("Server error:", err);
+    console.error("FULL ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -547,15 +554,34 @@ router.get("/getReelComment", async (req, res) => {
 // DELETE REEL
 router.delete("/deleteReel/:id", async (req, res) => {
   try {
-    const reel = await Reel.findByIdAndDelete(req.params.id);
+    const reel = await Reel.findById(req.params.id);
+
     if (!reel) {
       return res.status(404).json({ message: "Reel not found" });
     }
-    res.json({ message: "Reel deleted Successfully" });
+
+    const videoUrl = reel.videoUrl;
+
+    const publicId = videoUrl
+      .split("/")
+      .slice(-2)
+      .join("/")
+      .split(".")[0];
+
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: "video",
+    });
+
+    await Reel.findByIdAndDelete(req.params.id);
+
+    res.json({ message: "Reel and video deleted successfully" });
+
   } catch (err) {
+    console.error("Delete error:", err);
     res.status(500).json({ message: "Delete failed" });
   }
 });
+
 
 
 // Logout route
